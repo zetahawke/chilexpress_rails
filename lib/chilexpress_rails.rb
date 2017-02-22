@@ -8,7 +8,7 @@ module ChilexpressRails
     puts 'hi...'
     url = "http://www.chilexpress.cl/Views/ChilexpressCL/Resultado-busqueda.aspx?DATA=#{tracking_number}"
     doc = Nokogiri::HTML(open(url))
-    return 'No se obtuvo respuesta' unless doc
+    return 'No se obtuvo respuesta' if doc.at_css('section-title')[0].text.include?('No hemos encontrado')
     attributes = shipping_info(doc).merge!(receiver_info(doc))
     Order.new(attributes)
   end
@@ -24,6 +24,8 @@ module ChilexpressRails
       service: li[3].text.to_s.split(':')[1].strip.gsub(/\A\p{Space}*/, ''),
       status: li[4].text.to_s.split(':')[1].strip.gsub(/\A\p{Space}*/, '')
     }
+  rescue
+    'El sitio web parece haber modificado su estructura'
   end
 
   def self.receiver_info(html_doc)
@@ -37,5 +39,7 @@ module ChilexpressRails
       datetime: date + hour,
       receiver_name: li[4].text.to_s.split(':')[1].split(' ').first(2).join(' ').gsub(/\A\p{Space}*/, '')
     }
+  rescue
+    'El sitio web parece haber modificado su estructura'
   end
 end
