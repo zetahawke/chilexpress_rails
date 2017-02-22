@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'chilexpress_rails'
-  s.version     = '0.0.3'
+  s.version     = '0.1.1'
   s.date        = '2017-02-22'
   s.summary     = 'retreive tracking info'
   s.description = 'This gem will give some tracking information'
